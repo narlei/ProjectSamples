@@ -8,12 +8,17 @@
 
 import UIKit
 import Moya
+import RealmSwift
 
 class ViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
         self.getUserByName(name: "narlei")
+        let fm = FileManager.default
+        let fileURL = try! fm.url(for:.documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false)
+
+        print(fileURL)
     }
     
     func getUserByName(name:String) {
@@ -22,6 +27,7 @@ class ViewController: UIViewController {
                 let array = response.convert(classe: PSUser.self)
                 if let user = array.first as? PSUser {
                     self.getDirectories(user: user.login!)
+                    self.save(user: user)
                 }
             }
         }
@@ -34,6 +40,20 @@ class ViewController: UIViewController {
                 print(array)
             }
         })
+    }
+    
+    func save(user:PSUser) {
+        // Get the default Realm
+        let realm = try! Realm()
+        // You only need to do this once (per thread)
+        
+        // Add to the Realm inside a transaction
+        try! realm.write {
+            realm.add(user, update: true)
+        }
+        
+        let results = realm.objects(PSUser.self).filter(NSPredicate(format: "login contains 'na'"))
+        print("\nTotal: \(results.count)\n")
     }
 
     override func didReceiveMemoryWarning() {

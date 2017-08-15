@@ -8,7 +8,7 @@
 
 import Moya
 
-let PSUserProvider = MoyaProvider<PSUserService>(plugins: [NetworkLoggerPlugin(verbose: true, responseDataFormatter: JSONResponseDataFormatter)])
+let PSUserProvider = MoyaProvider<PSUserService>(plugins: [NetworkLoggerPlugin(verbose: false, responseDataFormatter: JSONResponseDataFormatter)])
 
 enum PSUserService {
     case search(query: String)
